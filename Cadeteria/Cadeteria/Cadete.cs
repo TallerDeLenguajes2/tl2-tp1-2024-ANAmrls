@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cadeteria
+namespace SistemaCadeteria
 {
     internal class Cadete
     {
@@ -15,7 +15,7 @@ namespace Cadeteria
         private int _orderCount;
         private List<Pedido> _pedidos;
 
-        public Cadete(int id, string name, string address, string phone, int orderCount)
+        public Cadete(int id, string name, string address, string phone)
         {
             _id = id;
             _name = name;

@@ -1,4 +1,4 @@
-﻿namespace Cadeteria
+﻿namespace SistemaCadeteria
 {
     public class Cliente
     {
