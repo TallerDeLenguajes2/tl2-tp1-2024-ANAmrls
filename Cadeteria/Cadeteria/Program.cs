@@ -15,6 +15,7 @@ Pedido pedido3 = altaPedido();
 // asignar pedidos a cadete
 Cadete cad1 = miCadeteria.Cadetes.Where(c => c.Id == 3).First();
 Cadete cad2 = miCadeteria.Cadetes.Where(c => c.Id == 1).First();
+Cadete cad3 = miCadeteria.Cadetes.Where(c => c.Id == 4).First();
 Console.WriteLine($"Pedidos cadete 1: {cad1.Pedidos.Count}");
 Console.WriteLine($"Pedidos cadete 2: {cad2.Pedidos.Count}");
 miCadeteria.AsignarPedido(pedido1, cad1.Id);
@@ -29,20 +30,20 @@ Console.WriteLine($"Pedidos cadete 2: {cad2.Pedidos.Count}");
 
 //cambiar estado de un pedido
 Console.WriteLine($"Estado pedido 1: {pedido1.State}");
-pedido1.CambiarEstado(Estado.Entregado);
+cad1.PedidoEntregado(1);
 Console.WriteLine($"Estado pedido 1: {pedido1.State}");
+Console.WriteLine($"Estado pedido 2: {pedido2.State}");
+cad2.PedidoEntregado(2);
+Console.WriteLine($"Estado pedido 2: {pedido2.State}");
 
 //reasignar pedido a otro cadete
 miCadeteria.ReasignarPedido(pedido1.Number, cad2.Id, cad1.Id);
 Console.WriteLine($"Pedidos cadete 1: {cad1.Pedidos.Count}");
 Console.WriteLine($"Pedidos cadete 2: {cad2.Pedidos.Count}");
 
-
 //Informe de pedidos
-/*TODO mostrar informe de pedidos al finalizar la jornada que incluya el monto ganado y 
- * la cantidad de envios de cada cadete y el total. Mostrar tambien cantidad de envios 
- * promedio por cada cadete 
-*/
+
+Informe(miCadeteria);
 
 static Cadeteria cargarDatosCadeteria()
 {
@@ -108,5 +109,24 @@ static Pedido altaPedido()
 
     Pedido nuevoPedido = new(number, obs, nuevoCliente);
     return nuevoPedido;
+}
+
+static void Informe(Cadeteria cadeteria)
+{
+    int totalEnvios = 0;
+    float promedioEnvios = 0;
+
+    Console.WriteLine("######## Informe de pedidos ########\n");
+    foreach (var cadete in cadeteria.Cadetes)
+    {
+        cadete.MostrarDatosInforme();
+        Console.WriteLine("\n");
+        totalEnvios += cadete.OrderCount;
+    }
+
+    promedioEnvios = totalEnvios / cadeteria.Cadetes.Count;
+
+    Console.WriteLine($"Total Envíos: {totalEnvios}");
+    Console.WriteLine($"Promedio de envíos por cadete: {promedioEnvios}");
 }
 

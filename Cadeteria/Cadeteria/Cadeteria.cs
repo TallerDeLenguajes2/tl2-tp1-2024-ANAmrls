@@ -66,14 +66,39 @@ namespace SistemaCadeteria
 
         public void AsignarPedido(Pedido pedido, int idCadete)
         {
-           Cadetes.First(c => c.Id == idCadete).AgregarPedido(pedido);
+            Cadete cadete = Cadetes.FirstOrDefault(c => c.Id == idCadete);
+
+            if (cadete != null)
+            {
+                cadete.AgregarPedido(pedido);
+            }
+            else
+            {
+                Console.WriteLine($"El cadete {idCadete} no se encontró");
+            }
         }
 
-        public void ReasignarPedido(int nroPedido, int idCadeteNuevo, int idCadete) {
-            Cadete cad = Cadetes.First(c => c.Id == idCadete);
-            Pedido pedido = cad.Pedidos.First(p => p.Number == nroPedido);
-            cad.Pedidos = cad.Pedidos.FindAll(p => p.Number != nroPedido);
-            AsignarPedido(pedido, idCadeteNuevo);
+        public void ReasignarPedido(int nroPedido, int idCadeteNuevo, int idCadete)
+        {
+            Cadete cad = Cadetes.FirstOrDefault(c => c.Id == idCadete);
+            if (cad != null)
+            {
+                Pedido pedido = cad.Pedidos.FirstOrDefault(p => p.Number == nroPedido);
+
+                if (pedido != null)
+                {
+                    cad.Pedidos = cad.Pedidos.FindAll(p => p.Number != nroPedido);
+                    AsignarPedido(pedido, idCadeteNuevo);
+                }
+                else
+                {
+                    Console.WriteLine($"El pedido {nroPedido} no se encontró");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"El cadete {idCadete} no se encontró");
+            }
         }
 
     }

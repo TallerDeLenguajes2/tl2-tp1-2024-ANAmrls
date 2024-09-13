@@ -36,5 +36,30 @@
         {
             Pedidos.Add(pedido);
         }
+
+        public void PedidoEntregado(int nroPedido)
+        {
+            Pedido pedido = Pedidos.FirstOrDefault(x => x.Number == nroPedido);
+
+            if (pedido != null)
+            {
+                pedido.CambiarEstado(Estado.Entregado);
+                OrderCount++;
+            }
+            else
+            {
+                Console.WriteLine($"Pedido {nroPedido} no encontrado");
+            }
+
+        }
+
+        public void MostrarDatosInforme()
+        {
+            Console.WriteLine($"ID: {this.Id}");
+            Console.WriteLine($"Nombre: {this.Name}");
+            Console.WriteLine($"Pedidos entregados: {this.OrderCount}");
+            Console.WriteLine($"Monto ganado: {this.JornalACobrar()}");
+        }
+
     }
 }
