@@ -7,6 +7,10 @@
         private string _phone;
         private string _reference;
 
+        public Cliente()
+        {
+        }
+
         public Cliente(string name, string address, string phone, string reference)
         {
             _name = name;

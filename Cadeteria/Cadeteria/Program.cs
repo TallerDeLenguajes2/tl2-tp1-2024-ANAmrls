@@ -4,14 +4,42 @@ using SistemaCadeteria;
 Cadeteria miCadeteria = cargarDatosCadeteria();
 
 //Gestión de pedidos
+Console.WriteLine("Gestión de pedidos\n");
+Console.WriteLine("Seleccione una opción");
 
-//TODO dar alta de pedidos
-//TODO asignar pedidos a cadete
-//TODO cambiar estado de un pedido
-//TODO reasignar pedido a otro cadete
+//alta de pedidos
+Pedido pedido1 = altaPedido();
+Pedido pedido2 = altaPedido();
+Pedido pedido3 = altaPedido();
+
+// asignar pedidos a cadete
+Cadete cad1 = miCadeteria.Cadetes.Where(c => c.Id == 3).First();
+Cadete cad2 = miCadeteria.Cadetes.Where(c => c.Id == 1).First();
+Console.WriteLine($"Pedidos cadete 1: {cad1.Pedidos.Count}");
+Console.WriteLine($"Pedidos cadete 2: {cad2.Pedidos.Count}");
+miCadeteria.AsignarPedido(pedido1, cad1.Id);
+Console.WriteLine($"Pedidos cadete 1: {cad1.Pedidos.Count}");
+Console.WriteLine($"Pedidos cadete 2: {cad2.Pedidos.Count}");
+miCadeteria.AsignarPedido(pedido2, cad2.Id);
+Console.WriteLine($"Pedidos cadete 1: {cad1.Pedidos.Count}");
+Console.WriteLine($"Pedidos cadete 2: {cad2.Pedidos.Count}");
+miCadeteria.AsignarPedido(pedido3, cad1.Id);
+Console.WriteLine($"Pedidos cadete 1: {cad1.Pedidos.Count}");
+Console.WriteLine($"Pedidos cadete 2: {cad2.Pedidos.Count}");
+
+//cambiar estado de un pedido
+Console.WriteLine($"Estado pedido 1: {pedido1.State}");
+pedido1.CambiarEstado(Estado.Entregado);
+Console.WriteLine($"Estado pedido 1: {pedido1.State}");
+
+//reasignar pedido a otro cadete
+miCadeteria.ReasignarPedido(pedido1.Number, cad2.Id, cad1.Id);
+Console.WriteLine($"Pedidos cadete 1: {cad1.Pedidos.Count}");
+Console.WriteLine($"Pedidos cadete 2: {cad2.Pedidos.Count}");
+
 
 //Informe de pedidos
-/*TODO mostrar informe de peidods al finalizar la jornada que incluya el monto ganado y 
+/*TODO mostrar informe de pedidos al finalizar la jornada que incluya el monto ganado y 
  * la cantidad de envios de cada cadete y el total. Mostrar tambien cantidad de envios 
  * promedio por cada cadete 
 */
@@ -54,4 +82,31 @@ static Cadeteria cargarDatosCadeteria()
     return nuevaCadeteria;
 }
 
+static Cliente altaCliente()
+{
+    Console.WriteLine("Ingrese el nombre del cliente");
+    string name = Console.ReadLine() ?? "";
+    Console.WriteLine("Ingrese la dirección del cliente");
+    string address = Console.ReadLine() ?? "";
+    Console.WriteLine("Ingrese el número de teléfono del cliente");
+    string phone = Console.ReadLine() ?? "";
+    Console.WriteLine("Ingrese una referencia");
+    string reference = Console.ReadLine() ?? "";
+
+    Cliente nuevoCliente = new(name, address, phone, reference);
+    return nuevoCliente;
+}
+
+static Pedido altaPedido()
+{
+    Console.WriteLine("Ingrese la información del nuevo pedido:");
+    Console.WriteLine("Ingrese el número del pedido");
+    int number = Convert.ToInt32(Console.ReadLine());
+    Console.WriteLine("Observaciones");
+    string obs = Console.ReadLine() ?? "";
+    Cliente nuevoCliente = altaCliente();
+
+    Pedido nuevoPedido = new(number, obs, nuevoCliente);
+    return nuevoPedido;
+}
 

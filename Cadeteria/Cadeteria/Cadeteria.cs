@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SistemaCadeteria
 {
-    internal class Cadeteria
+    public class Cadeteria
     {
         private string _name;
         private string _phone;
@@ -66,5 +63,18 @@ namespace SistemaCadeteria
 
             return cadetes;
         }
+
+        public void AsignarPedido(Pedido pedido, int idCadete)
+        {
+           Cadetes.First(c => c.Id == idCadete).AgregarPedido(pedido);
+        }
+
+        public void ReasignarPedido(int nroPedido, int idCadeteNuevo, int idCadete) {
+            Cadete cad = Cadetes.First(c => c.Id == idCadete);
+            Pedido pedido = cad.Pedidos.First(p => p.Number == nroPedido);
+            cad.Pedidos = cad.Pedidos.FindAll(p => p.Number != nroPedido);
+            AsignarPedido(pedido, idCadeteNuevo);
+        }
+
     }
 }
