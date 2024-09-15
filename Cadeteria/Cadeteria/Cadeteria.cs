@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace SistemaCadeteria
 {
@@ -26,7 +25,7 @@ namespace SistemaCadeteria
 
         private static List<Cadete> CargarCadetes()
         {
-            Console.WriteLine("Cargando lista de cadetes");
+            Console.WriteLine("----- Cargando lista de cadetes... -----");
             string path = "listadoCadetes.csv";
 
             List<Cadete> cadetes = new();
@@ -64,41 +63,44 @@ namespace SistemaCadeteria
             return cadetes;
         }
 
-        public void AsignarPedido(Pedido pedido, int idCadete)
-        {
-            Cadete cadete = Cadetes.FirstOrDefault(c => c.Id == idCadete);
+        public bool AsignarPedido(Pedido pedido, int idCadete)
+        {            
+            Cadete? cadete = Cadetes.FirstOrDefault(c => c.Id == idCadete);
 
             if (cadete != null)
             {
                 cadete.AgregarPedido(pedido);
+                return true;
             }
             else
             {
-                Console.WriteLine($"El cadete {idCadete} no se encontró");
+                return false;
             }
         }
 
-        public void ReasignarPedido(int nroPedido, int idCadeteNuevo, int idCadete)
+        public bool ReasignarPedido(int nroPedido, int idCadeteNuevo)
         {
-            Cadete cad = Cadetes.FirstOrDefault(c => c.Id == idCadete);
-            if (cad != null)
-            {
-                Pedido pedido = cad.Pedidos.FirstOrDefault(p => p.Number == nroPedido);
+            Cadete? cadeteConPedido = null;
+            Pedido? pedido = null;
 
-                if (pedido != null)
-                {
-                    cad.Pedidos = cad.Pedidos.FindAll(p => p.Number != nroPedido);
-                    AsignarPedido(pedido, idCadeteNuevo);
-                }
-                else
-                {
-                    Console.WriteLine($"El pedido {nroPedido} no se encontró");
-                }
-            }
-            else
+            foreach (var (c, p) in from c in Cadetes
+                                   from p in c.Pedidos
+                                   where p.Number == nroPedido
+                                   select (c, p))
             {
-                Console.WriteLine($"El cadete {idCadete} no se encontró");
+                cadeteConPedido = c;
+                pedido = p;
             }
+
+            if (cadeteConPedido == null || pedido == null)
+            {
+                return false;
+            }
+
+            cadeteConPedido.Pedidos.Remove(pedido);
+            AsignarPedido(pedido, idCadeteNuevo);
+            return true;
+
         }
 
     }

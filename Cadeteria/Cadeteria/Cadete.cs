@@ -37,18 +37,22 @@
             Pedidos.Add(pedido);
         }
 
-        public void PedidoEntregado(int nroPedido)
+        public bool CambiarEstadoPedido(int nroPedido, Estado estado)
         {
-            Pedido pedido = Pedidos.FirstOrDefault(x => x.Number == nroPedido);
+            Pedido? pedido = Pedidos.FirstOrDefault(x => x.Number == nroPedido);
 
             if (pedido != null)
             {
-                pedido.CambiarEstado(Estado.Entregado);
-                OrderCount++;
+                if (estado != Estado.Pendiente)
+                {
+                    pedido.CambiarEstado(estado);
+                    OrderCount++;                    
+                }
+                return true;
             }
             else
             {
-                Console.WriteLine($"Pedido {nroPedido} no encontrado");
+                return false;
             }
 
         }
