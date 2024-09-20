@@ -13,10 +13,10 @@
 
         public Cliente(string name, string address, string phone, string reference)
         {
-            _name = name;
-            _address = address;
-            _phone = phone;
-            _reference = reference;
+            Name = name;
+            Address = address;
+            Phone = phone;
+            Reference = reference;
         }
 
         public string Name { get => _name; set => _name = value; }

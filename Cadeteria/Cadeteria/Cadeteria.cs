@@ -4,9 +4,12 @@ namespace SistemaCadeteria
 {
     public class Cadeteria
     {
+        private const int Jornal = 500;
         private string _name;
         private string _phone;
         private List<Cadete> _cadetes;
+        private List<Pedido> _pedidos;
+        //private int _jornal;
 
         public Cadeteria()
         {
@@ -14,14 +17,17 @@ namespace SistemaCadeteria
 
         public Cadeteria(string name, string phone)
         {
-            _name = name;
-            _phone = phone;
-            _cadetes = CargarCadetes();
+            Name = name;
+            Phone = phone;
+            Cadetes = CargarCadetes();
+            Pedidos = new List<Pedido>();
         }
 
         public string Name { get => _name; set => _name = value; }
         public string Phone { get => _phone; set => _phone = value; }
+        public List<Pedido> Pedidos { get => _pedidos; set => _pedidos = value; }
         internal List<Cadete> Cadetes { get => _cadetes; set => _cadetes = value; }
+        //public int Jornal { get => _jornal; init => _jornal = value; }
 
         private static List<Cadete> CargarCadetes()
         {
@@ -63,13 +69,14 @@ namespace SistemaCadeteria
             return cadetes;
         }
 
-        public bool AsignarPedido(Pedido pedido, int idCadete)
+        public bool AsignarPedido(int idPedido, int idCadete)
         {            
             Cadete? cadete = Cadetes.FirstOrDefault(c => c.Id == idCadete);
+            Pedido? pedido = Pedidos.FirstOrDefault(p => p.Number == idPedido);
 
-            if (cadete != null)
+            if (cadete != null && pedido != null)
             {
-                cadete.AgregarPedido(pedido);
+                pedido.IdCadete = idCadete;
                 return true;
             }
             else
@@ -78,29 +85,44 @@ namespace SistemaCadeteria
             }
         }
 
-        public bool ReasignarPedido(int nroPedido, int idCadeteNuevo)
+        public int JornalACobrar(int idCadete)
         {
-            Cadete? cadeteConPedido = null;
-            Pedido? pedido = null;
+            Cadete? cadete = Cadetes.Find(c => c.Id == idCadete);
 
-            foreach (var (c, p) in from c in Cadetes
-                                   from p in c.Pedidos
-                                   where p.Number == nroPedido
-                                   select (c, p))
+            if (cadete == null)
             {
-                cadeteConPedido = c;
-                pedido = p;
+                return 0;
             }
 
-            if (cadeteConPedido == null || pedido == null)
+            return cadete.OrderCount * Jornal;
+        }
+
+        public void AgregarPedido(Pedido pedido) => Pedidos.Add(pedido);
+
+        public bool CambiarEstadoPedido(int nroPedido, Estado nuevoEstado)
+        {
+            Pedido? pedido = Pedidos.FirstOrDefault(p => p.Number == nroPedido);
+
+            if (pedido == null)
             {
                 return false;
             }
 
-            cadeteConPedido.Pedidos.Remove(pedido);
-            AsignarPedido(pedido, idCadeteNuevo);
-            return true;
+            Cadete? cadete = Cadetes.FirstOrDefault(c => c.Id == pedido.IdCadete);
 
+            if (cadete == null)
+            {
+                return false;
+            }
+
+            if (nuevoEstado == Estado.Entregado)
+            {
+                ++cadete.OrderCount;
+            }
+ 
+            pedido.CambiarEstado(nuevoEstado);
+
+            return true;
         }
 
     }

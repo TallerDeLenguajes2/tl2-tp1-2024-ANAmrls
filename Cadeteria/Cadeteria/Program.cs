@@ -3,7 +3,6 @@ using SistemaCadeteria;
 
 Cadeteria miCadeteria = CargarDatosCadeteria();
 int opcion = 0;
-List<Pedido> pedidosSinAsignar = new();
 
 //Gestión de pedidos
 do
@@ -13,12 +12,11 @@ do
                       + "1 - Dar alta a un nuevo pedido\n"
                       + "2 - Asignar pedido a un cadete\n"
                       + "3 - Modificar estado de un pedido\n"
-                      + "4 - Reasignar un pedido a un cadete diferente\n"
-                      + "5 - Para salir (se muestra el informe de pedidos de la jornada)");
+                      + "4 - Para salir (se muestra el informe de pedidos de la jornada)");
 
     _ = int.TryParse(Console.ReadLine(), out opcion);
 
-    while (opcion < 1 || opcion > 5)
+    while (opcion is < 1 or > 4)
     {
         Console.WriteLine("Ingrese una opción válida\n");
         _ = int.TryParse(Console.ReadLine(), out opcion);
@@ -26,10 +24,9 @@ do
 
     switch (opcion)
     {
-        case 1: pedidosSinAsignar.Add(AltaPedido()); break;
-        case 2: AsignarPedidoACadete(miCadeteria, pedidosSinAsignar); break;
-        case 3: CambiarEstadoPedidoDeCadete(miCadeteria); break;
-        case 4: ReasignarPedidoDeUnCadete(miCadeteria); break;
+        case 1: miCadeteria.Pedidos.Add(AltaPedido()); break;
+        case 2: AsignarPedidoACadete(miCadeteria); break;
+        case 3: CambiarEstadoPedido(miCadeteria); break;
         case 5: Informe(miCadeteria); break;
     }
 }
@@ -112,25 +109,24 @@ static Pedido AltaPedido()
 }
 
 // asignar pedidos a cadete
-static void AsignarPedidoACadete(Cadeteria miCadeteria, List<Pedido> pedidosSinAsignar)
+static void AsignarPedidoACadete(Cadeteria miCadeteria)
 {
     Console.WriteLine("Ingrese el número del pedido: ");
     _ = int.TryParse(Console.ReadLine(), out int nroPedido);
 
-    Pedido? pedido = pedidosSinAsignar.Find(x => x.Number == nroPedido);
+    Pedido? pedido = miCadeteria.Pedidos.Find(x => x.Number == nroPedido);
 
     if (pedido == null)
     {
-        Console.WriteLine($"No existe el pedido número {nroPedido} o ya se encuentra asignado a un cadete\n");
+        Console.WriteLine($"No existe el pedido número {nroPedido}\n");
         return;
     }
 
     Console.WriteLine("Ingrese el ID del cadete al que se le asignará el pedido: ");
     _ = int.TryParse(Console.ReadLine(), out int idCadete);
 
-    if (miCadeteria.AsignarPedido(pedido, idCadete))
+    if (miCadeteria.AsignarPedido(pedido.Number, idCadete))
     {
-        pedidosSinAsignar.Remove(pedido);
         Console.WriteLine("Pedido asignado con éxito");
     }
     else
@@ -141,23 +137,18 @@ static void AsignarPedidoACadete(Cadeteria miCadeteria, List<Pedido> pedidosSinA
 }
 
 //cambiar estado de un pedido
-static void CambiarEstadoPedidoDeCadete(Cadeteria cadeteria)
+static void CambiarEstadoPedido(Cadeteria cadeteria)
 {
-    Estado nuevoEstado = Estado.Pendiente;
-
-    Console.WriteLine("Ingrese el ID del cadete que tiene el pedido: ");
-    _ = int.TryParse(Console.ReadLine(), out int idCadete);
-
-    Cadete? cadete = cadeteria.Cadetes.Find(c => c.Id == idCadete);
-
-    if (cadete == null)
-    {
-        Console.WriteLine($"El cadete {idCadete} no se encontró");
-        return;
-    }
-    
     Console.WriteLine("Ingrese el número del pedido: ");
     _ = int.TryParse(Console.ReadLine(), out int nroPedido);
+
+    Pedido? pedido = cadeteria.Pedidos.FirstOrDefault(p => p.Number == nroPedido);
+
+    if (pedido == null)
+    {
+        Console.WriteLine("Elpedido no se encontró");
+        return;
+    }
 
     Console.WriteLine("Ingrese el nuevo estado del pedido: \n"
                       + "1 - Entregado\n"
@@ -173,40 +164,15 @@ static void CambiarEstadoPedidoDeCadete(Cadeteria cadeteria)
 
     if (estadoElegido == 1)
     {
-        nuevoEstado = Estado.Entregado;
+        cadeteria.CambiarEstadoPedido(nroPedido, Estado.Entregado);
     }
     else
     {
-        nuevoEstado = Estado.Pagado;
+        cadeteria.CambiarEstadoPedido(nroPedido, Estado.Pagado);
     }
 
-    if (cadete.CambiarEstadoPedido(nroPedido, nuevoEstado))
-    {
-        Console.WriteLine("Estado cambiado con éxito");
-    } 
-    else
-    {
-        Console.WriteLine("El pedido no se encontró en el cadete seleccionado");
-    }
-}
-
-//reasignar pedido a otro cadete
-static void ReasignarPedidoDeUnCadete(Cadeteria cadeteria)
-{
-    Console.WriteLine("Ingrese el número del pedido: ");
-    _ = int.TryParse(Console.ReadLine(), out int nroPedido);
-
-    Console.WriteLine("Ingrese el ID del cadete a quien quiere asignar el pedido: ");
-    _ = int.TryParse(Console.ReadLine(), out int idCadeteNuevo);
-
-    if (cadeteria.ReasignarPedido(nroPedido, idCadeteNuevo))
-    {
-        Console.WriteLine($"Pedido reasignado con éxito al cadete {idCadeteNuevo}");
-    }
-    else
-    {
-        Console.WriteLine($"No se encontró el pedido número {nroPedido}");
-    }
+    Console.WriteLine("Estado cambiado con éxito");
+    
 }
 
 //Informe de pedidos
@@ -228,4 +194,3 @@ static void Informe(Cadeteria cadeteria)
     Console.WriteLine($"Total Envíos: {totalEnvios}");
     Console.WriteLine($"Promedio de envíos por cadete: {promedioEnvios}");
 }
-
