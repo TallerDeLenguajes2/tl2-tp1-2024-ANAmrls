@@ -27,46 +27,48 @@ do
         case 1: miCadeteria.Pedidos.Add(AltaPedido()); break;
         case 2: AsignarPedidoACadete(miCadeteria); break;
         case 3: CambiarEstadoPedido(miCadeteria); break;
-        case 5: Informe(miCadeteria); break;
+        case 4: Informe(miCadeteria); break;
     }
 }
-while (opcion != 5);
+while (opcion != 4);
 
 static Cadeteria CargarDatosCadeteria()
 {
-    Console.WriteLine("----- Cargando datos de la cadeteria... -----\n");
-    string path = "cadeteria.csv";
+    Console.WriteLine("----- Iniciando Sistema... -----\n");
+    string pathCadeteria = "cadeteria";
+    string pathCadetes = "listadoCadetes";
+    string extension = "";
 
     Cadeteria nuevaCadeteria = new();
 
-	try
-	{
-        var lines = File.ReadAllLines(path);
+    Console.WriteLine("Seleccione el tipo de acceso a usar: \n"
+                      + "1 - CSV\n"
+                      + "2 - JSON");
 
-        foreach (var line in lines)
-        {
-            var campos = line.Split(',');
+    _ = int.TryParse(Console.ReadLine(), out int tipoArchivo);
 
-            string nombre = campos[0];
-            string telefono = campos[1];
-
-            nuevaCadeteria = new(nombre, telefono);
-        }
-        Console.WriteLine("Datos cargados con éxito\n");
-    }
-	catch (DirectoryNotFoundException e)
-	{
-        Console.WriteLine("Carpeta no encontrada: " + e.Message);
-	}
-    catch (FileNotFoundException e)
+    while (tipoArchivo < 1 || tipoArchivo> 2)
     {
-        Console.WriteLine("Archivo no encontrado: " + e.Message);
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine("Ocurrió un problema al intentar abrir el archivo: " + e.Message);
+        Console.WriteLine("Ingrese una opción de estado válida");
+        _ = int.TryParse(Console.ReadLine(), out tipoArchivo);
     }
 
+    if (tipoArchivo == 1)
+    {
+        extension = ".csv";
+        AccesoACSV accesoACSV = new(pathCadeteria += extension, pathCadetes += extension);
+
+        nuevaCadeteria = accesoACSV.CargarDatosCadeteria();
+    }
+    else
+    {
+        extension = ".json";
+        AccesoAJson accesoAJson = new(pathCadeteria += extension, pathCadetes += extension);
+
+        nuevaCadeteria = accesoAJson.CargarDatosCadeteria();
+    }
+
+    Console.WriteLine("----- Cargando datos de la cadetería... -----\n");
     return nuevaCadeteria;
 }
 

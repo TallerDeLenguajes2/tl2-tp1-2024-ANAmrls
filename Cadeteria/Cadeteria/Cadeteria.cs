@@ -9,7 +9,6 @@ namespace SistemaCadeteria
         private string _phone;
         private List<Cadete> _cadetes;
         private List<Pedido> _pedidos;
-        //private int _jornal;
 
         public Cadeteria()
         {
@@ -19,7 +18,7 @@ namespace SistemaCadeteria
         {
             Name = name;
             Phone = phone;
-            Cadetes = CargarCadetes();
+            Cadetes = new List<Cadete>();
             Pedidos = new List<Pedido>();
         }
 
@@ -27,47 +26,6 @@ namespace SistemaCadeteria
         public string Phone { get => _phone; set => _phone = value; }
         public List<Pedido> Pedidos { get => _pedidos; set => _pedidos = value; }
         internal List<Cadete> Cadetes { get => _cadetes; set => _cadetes = value; }
-        //public int Jornal { get => _jornal; init => _jornal = value; }
-
-        private static List<Cadete> CargarCadetes()
-        {
-            Console.WriteLine("----- Cargando lista de cadetes... -----");
-            string path = "listadoCadetes.csv";
-
-            List<Cadete> cadetes = new();
-
-            try
-            {
-                var lines = File.ReadAllLines(path);
-                
-                foreach (var line in lines)
-                {
-                    var campos = line.Split(',');
-
-                    string id = campos[0];
-                    string name = campos[1];
-                    string address = campos[2];
-                    string phone = campos[3];
-
-                    cadetes.Add(new Cadete(int.Parse(id), name, address, phone));
-                }
-                Console.WriteLine("Listado de cadetes cargado con éxito\n");
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                Console.WriteLine("Carpeta no encontrada: " + e.Message);
-            }
-            catch (FileNotFoundException e)
-            {
-                Console.WriteLine("Archivo no encontrado: " + e.Message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Ocurrió un problema al intentar abrir el archivo: " + e.Message);
-            }
-
-            return cadetes;
-        }
 
         public bool AsignarPedido(int idPedido, int idCadete)
         {            
