@@ -27,12 +27,11 @@
         public string Phone { get => _phone; set => _phone = value; }
         public int OrderCount { get => _orderCount; set => _orderCount = value; }
 
-        public void MostrarDatosInforme()
-        {
-            Console.WriteLine($"ID: {this.Id}");
-            Console.WriteLine($"Nombre: {this.Name}");
-            Console.WriteLine($"Pedidos entregados: {this.OrderCount}");
-        }
+        public int MostrarIdCadete() => Id;
+        public string MostrarNombreCadete() => Name;
+        public string MostrarDireccionCadete() => Address;
+        public string MostrarTelefonoCadete() => Phone;
+        public int MostrarPedidosEntregados() => OrderCount;
 
     }
 }

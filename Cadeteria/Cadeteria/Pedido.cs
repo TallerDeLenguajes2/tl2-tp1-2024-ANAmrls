@@ -32,13 +32,7 @@
 
         public void VerDireccionCliente()
         {
-            Console.WriteLine($"Dirección del cliente: {Cliente.Address}");
-        }
-
-        public void VerDatosCliente()
-        {
-            Console.WriteLine("Datos del cliente");
-            Cliente.MostrarDatos();
+            Cliente.MostrarDireccionCliente();
         }
 
         public void CambiarEstado(Estado estado)

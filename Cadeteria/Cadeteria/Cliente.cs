@@ -24,12 +24,9 @@
         public string Phone { get => _phone; set => _phone = value; }
         public string Reference { get => _reference; set => _reference = value; }
 
-        public void MostrarDatos ()
-        {
-            Console.WriteLine($"Nombre: {this.Name}");
-            Console.WriteLine($"Dirección: {this.Address}");
-            Console.WriteLine($"Teléfono: {this.Phone}");
-            Console.WriteLine($"Referencia: {this.Reference}");
-        }
+        public string MostrarNombreCliente() => Name;
+        public string MostrarDireccionCliente() => Address;
+        public string MostrarTelefonoCliente() => Phone;
+        public string MostrarReferenciaCliente() => Reference;
     }
 }

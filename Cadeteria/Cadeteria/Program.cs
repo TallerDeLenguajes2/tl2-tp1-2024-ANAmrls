@@ -186,7 +186,10 @@ static void Informe(Cadeteria cadeteria)
     Console.WriteLine("\n######## Informe de pedidos ########\n");
     foreach (var cadete in cadeteria.Cadetes)
     {
-        cadete.MostrarDatosInforme();
+        Console.WriteLine($"Datos del cadete con ID: {cadete.MostrarIdCadete()}\n");
+        Console.WriteLine($"Nombre: {cadete.MostrarNombreCadete()}\n");
+        Console.WriteLine($"Telefono: {cadete.MostrarTelefonoCadete()}\n");
+        Console.WriteLine($"Pedidos Entregados: {cadete.MostrarPedidosEntregados()}\n");
         Console.WriteLine("\n");
         totalEnvios += cadete.OrderCount;
     }
